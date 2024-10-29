@@ -29,9 +29,19 @@ func handleConnection(conn net.Conn) {
 	log.Printf("Client connected with addr: %s", conn.RemoteAddr().String())
 	buffer := make([]byte, 1024)
 	n, err := conn.Read(buffer)
+	log.Println(n)
 	if err != nil {
 		log.Println("Error: ", err)
 	}
-	log.Printf("Data [%s]: %s \n", conn.RemoteAddr().String(), buffer[0:n])
+	log.Printf("Data [%s]:\n", conn.RemoteAddr().String())
+	ParsePacket(buffer[:n])
 	defer conn.Close()
+}
+
+func ParsePacket(packet []byte) {
+	log.Printf("Raw Packet: %x", packet)
+	version := packet[0]
+	data := packet[1 : len(packet)-32]
+	hash := packet[len(packet)-33:]
+	log.Printf("Version: %d, Data: %s, Hash: %x\n", version, string(data), hash)
 }

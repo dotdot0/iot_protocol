@@ -2,7 +2,7 @@ package main
 
 import (
 	"crypto/sha256"
-	"encoding/json"
+	"fmt"
 	"log"
 	"net"
 )
@@ -13,7 +13,7 @@ type Data struct {
 }
 
 func main() {
-	conn, err := net.Dial("tcp", "server:4221")
+	conn, err := net.Dial("tcp", "localhost:4221")
 
 	if err != nil {
 		log.Println("Error: ", err)
@@ -25,18 +25,37 @@ func main() {
 	h := sha256.New()
 	h.Write([]byte(str))
 
-	data := Data{
-		Data: str,
-		Hash: string(h.Sum(nil)),
-	}
+	hash := h.Sum(nil)
+	// data := Data{
+	// 	Data: str,
+	// 	Hash: string(h.Sum(nil)),
+	// }
 
-	json_data, err := json.Marshal(data)
+	// json_data, err := json.Marshal(data)
 
-	if err != nil {
-		return
-	}
+	// if err != nil {
+	// 	return
+	// }
+	var data string
 
-	_, err = conn.Write([]byte(string(json_data)))
+	fmt.Print("Data: ")
+	fmt.Scan(&data)
+
+	data_main := make([]byte, len(data)+32)
+
+	var version byte = 1
+
+	data_main[0] = version
+
+	copy(data_main[1:], data)
+
+	log.Println(len(hash))
+	println(hash)
+	copy(data_main[len(data)+1:], hash)
+
+	log.Println(len(data_main))
+
+	_, err = conn.Write([]byte(data_main))
 
 	if err != nil {
 		log.Println("Error: ", err)
