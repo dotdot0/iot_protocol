@@ -10,4 +10,5 @@ services:
     build:
       context: "./client"
       dockerfile: "Dockerfile"
-    
+    depends_on:
+      - server

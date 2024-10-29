@@ -26,11 +26,12 @@ func main() {
 }
 
 func handleConnection(conn net.Conn) {
+	log.Printf("Client connected with addr: %s", conn.RemoteAddr().String())
 	buffer := make([]byte, 1024)
 	n, err := conn.Read(buffer)
 	if err != nil {
 		log.Println("Error: ", err)
 	}
-	log.Printf("Bytes: %s \n", buffer[0:n])
+	log.Printf("Data [%s]: %s \n", conn.RemoteAddr().String(), buffer[0:n])
 	defer conn.Close()
 }
