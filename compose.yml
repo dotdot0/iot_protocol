@@ -1,0 +1,13 @@
+services:
+  server:
+    build:
+      context: "./server"
+      dockerfile: "Dockerfile"
+    ports:
+      - 4221:4221
+  
+  client:
+    build:
+      context: "./client"
+      dockerfile: "Dockerfile"
+    
